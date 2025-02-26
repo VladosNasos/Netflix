@@ -10,7 +10,7 @@ import {
   Link
 } from '@mui/material';
 
-const SignUpPage: React.FC = () => {
+const LoginPage: React.FC = () => {
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [showPassword, setShowPassword] = React.useState(false);
@@ -30,21 +30,20 @@ const SignUpPage: React.FC = () => {
     return input.replace(/[\${}"]/g, '');
   };
 
-  // Email validation
+  // Simple email check
   const isValidEmail = (value: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(value).toLowerCase());
   };
 
-  const handleSignUp = () => {
-    let newErrors: typeof errors = {};
+  const handleLogin = () => {
+    const newErrors: typeof errors = {};
 
     const rawEmail = email.trim();
     const rawPassword = password.trim();
     const safeEmail = sanitizeInput(rawEmail);
     const safePassword = sanitizeInput(rawPassword);
 
-    // Basic required fields
     if (!rawEmail) {
       newErrors.email = 'Email is required';
     } else if (!isValidEmail(rawEmail)) {
@@ -57,18 +56,19 @@ const SignUpPage: React.FC = () => {
       newErrors.password = 'Password must be at least 6 characters';
     }
 
-    // Check for NoSQL forbidden chars
+    // Check for forbidden characters
     if (rawEmail !== safeEmail || rawPassword !== safePassword) {
       newErrors.general =
         'Input contains invalid characters. Please remove any { } " or $.';
     }
 
-    setErrors(newErrors);
-
+    // If no field errors, show a sample "Wrong email or password"
     if (Object.keys(newErrors).length === 0) {
-      console.log('Sign-up successful with:', { rawEmail, rawPassword });
-      // e.g., call your backend to create the account
+      newErrors.general =
+        'Wrong e-mail or password. Please try again later or use another data';
     }
+
+    setErrors(newErrors);
   };
 
   return (
@@ -98,7 +98,7 @@ const SignUpPage: React.FC = () => {
           px: 4,
         }}
       >
-        {/* Cinemate Logo */}
+        {/* Logo */}
         <Box
           component="img"
           src="/netflexlogo.svg"
@@ -106,7 +106,7 @@ const SignUpPage: React.FC = () => {
           sx={{ width: 240, mb: 8, mt: 8 }}
         />
 
-        {/* "Create an account" heading */}
+        {/* "Log in" heading */}
         <Link
           underline="none"
           variant="body1"
@@ -124,7 +124,7 @@ const SignUpPage: React.FC = () => {
             },
           }}
         >
-          Create an account
+          Log in
         </Link>
 
         {/* General error message */}
@@ -230,11 +230,11 @@ const SignUpPage: React.FC = () => {
           }}
         />
 
-        {/* Sign-up Button */}
+        {/* Log In Button */}
         <Button
           variant="contained"
           fullWidth
-          onClick={handleSignUp}
+          onClick={handleLogin}
           sx={{
             bgcolor: '#1E8E95',
             color: '#FFFFFF',
@@ -245,17 +245,35 @@ const SignUpPage: React.FC = () => {
             '&:hover': {
               bgcolor: '#24C0C9',
             },
-            mb: 10,
+            mb: 2, // margin before "Forgot password?"
           }}
         >
-          Sign up
+          Log in
         </Button>
 
-        {/* Footer text: already have an account? Log in */}
+        {/* "Forgot your password?" link */}
+        <Link
+          href="#"
+          underline="none"
+          sx={{
+            color: '#46C2D3',
+            fontSize: 16,
+            mt: 2,
+            mb: 4,
+            '&:hover': {
+              color: '#24C0C9',
+              textShadow: '0 0 6px #24C0C9',
+            },
+          }}
+        >
+          Forgot your password?
+        </Link>
+
+        {/* Footer text: "Don't have an account? Sign up" */}
         <Typography variant="body2" sx={{ color: '#FFFFFF', fontSize: 16 }}>
-          Already have an account?{' '}
+          Don’t have an account?{' '}
           <Link
-            href="/login"
+            href="/signup"
             underline="none"
             sx={{
               color: '#46C2D3',
@@ -267,7 +285,7 @@ const SignUpPage: React.FC = () => {
               fontSize: 16,
             }}
           >
-            Log in
+            Sign up
           </Link>
         </Typography>
       </Paper>
@@ -275,4 +293,4 @@ const SignUpPage: React.FC = () => {
   );
 };
 
-export default SignUpPage;
+export default LoginPage;
